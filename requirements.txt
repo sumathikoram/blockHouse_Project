@@ -1,5 +1,5 @@
-echo "fastapi" >> requirements.txt
-echo "uvicorn" >> requirements.txt
-echo "sqlalchemy" >> requirements.txt
-echo "psycopg2-binary" >> requirements.txt
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
 
