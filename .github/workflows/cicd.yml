@@ -1,10 +1,10 @@
 name: CI/CD Pipeline
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-  push:
+  pull_request:
     branches:
       - main
 
@@ -12,6 +12,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -26,43 +27,19 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Tests
-        run: |
-	  export TEST_ENV=true
-          pytest
+        env:
+          TEST_ENV: true  # Set environment variable properly
+        run: pytest  # Ensure pytest runs in the correct environment
 
   build:
     name: Build Docker Image
-    needs: test
+    needs: test  # This should match the "test" job name
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Build Docker Image
-        run: |
-          docker build -t fastapi-orders .
-
-  deploy:
-    name: Deploy to AWS EC2
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Deploy to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            cd blockHouse_Project
-            git pull origin main
-            docker-compose down
-            docker-compose up --build -d
-          EOF
+        run: docker build -t my-fastapi-app .
 
