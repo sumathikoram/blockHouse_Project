@@ -14,7 +14,7 @@ def get_db():
     finally:
         db.close()
 
-
+# Pydantic Model
 class OrderCreate(BaseModel):
     symbol: str
     price: float

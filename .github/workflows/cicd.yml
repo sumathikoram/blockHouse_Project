@@ -27,6 +27,7 @@ jobs:
 
       - name: Run Tests
         run: |
+	  export TEST_ENV=true
           pytest
 
   build:

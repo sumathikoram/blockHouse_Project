@@ -1,23 +1,27 @@
-from sqlalchemy import Column, Integer, String, Float, Enum, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import declarative_base  # Correct import for SQLAlchemy 2.0
-from sqlalchemy import create_engine
-#from models import Base  # Ensure models.py defines the Base class
-import enum
 import os
+from sqlalchemy import Column, Integer, String, Float, Enum, create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+import enum
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://sumathikoram:password@db/trade_db")
+# Check if we are running in test mode (GitHub Actions)
+TEST_ENV = os.getenv("TEST_ENV", "false").lower() == "true"
 
+# Use SQLite for testing, PostgreSQL for production
+if TEST_ENV:
+    DATABASE_URL = "sqlite:///./test.db"
+else:
+    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://sumathikoram:password@db/trade_db")
 
-# Database Configuration
-#DATABASE_URL = "sqlite:///./orders.db"  # Change for PostgreSQL
-#DATABASE_URL = "postgresql://sumathikoram:password@localhost/trade_db"
+# Database Engine
+if TEST_ENV:
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False}, echo=True)
+else:
+    engine = create_engine(DATABASE_URL, echo=True)
 
-
-#engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-engine = create_engine(DATABASE_URL,echo=True)
+# Session Factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Base Model
 Base = declarative_base()
 
 # Enum for Order Types
@@ -35,5 +39,6 @@ class Order(Base):
     quantity = Column(Integer)
     order_type = Column(Enum(OrderType))
 
-# Create Tables
-Base.metadata.create_all(bind=engine)
+# Create Tables (Only in test mode)
+if TEST_ENV:
+    Base.metadata.create_all(bind=engine)
