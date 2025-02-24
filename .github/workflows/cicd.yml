@@ -45,3 +45,48 @@ jobs:
       - name: Build Docker Image
         run: docker build -t my-fastapi-app .
 
+  deploy:
+    name: Deploy to AWS EC2
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$EC2_SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+            # Install Docker & Docker Compose if not installed
+            if ! command -v docker &> /dev/null
+            then
+              echo "Installing Docker..."
+              sudo apt update
+              sudo apt install -y docker.io
+              sudo systemctl enable docker
+              sudo systemctl start docker
+              sudo usermod -aG docker $USER
+            fi
+
+            if ! command -v docker-compose &> /dev/null
+            then
+              echo "Installing Docker Compose..."
+              sudo apt install -y docker-compose
+            fi
+
+            # Pull the latest code
+            cd blockHouse_Project
+            git pull origin main
+            
+            # Restart Docker containers
+            docker-compose down
+            docker-compose up --build -d
+          EOF
+
