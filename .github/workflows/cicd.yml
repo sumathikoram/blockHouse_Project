@@ -29,7 +29,9 @@ jobs:
       - name: Run Tests
         env:
           TEST_ENV: true  # Set environment variable properly
-        run: pytest test_main.py  # Ensure pytest runs in the correct environment
+        run: |
+          ls -la  # Debugging step to check file existence
+          pytest ./test_main.py --verbose
 
   build:
     name: Build Docker Image
