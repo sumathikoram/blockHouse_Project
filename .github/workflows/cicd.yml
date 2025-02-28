@@ -64,7 +64,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           set -e  # Exit immediately if a command exits with a non-zero status
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key $EC2_USER@$EC2_HOST << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.github/github-actions-key $EC2_USER@$EC2_HOST << 'EOF'
             set -e  # Ensure the remote script also exits on error
 
             # Install Docker if not installed
