@@ -90,7 +90,7 @@ jobs:
               sudo apt install -y docker-compose
             fi
 
-            # Pull the latest code
+            # Pull the latest
             cd blockHouse_Project
             git pull origin main
 
