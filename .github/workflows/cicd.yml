@@ -68,13 +68,9 @@ jobs:
           ls -l ~/.ssh/github-actions-key
           cat ~/.ssh/github-actions-key | head -n 5  # Print first 5 lines for debugging
 
-      - name: Debug SSH Connection
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key $EC2_USER@$EC2_HOST "echo SSH Connection Successful"
-
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key $EC2_USER@$EC2_HOST << 'EOF'
+          ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key $EC2_USER@$EC2_HOST << 'EOF'
             echo "Connected to EC2"
 
             # Install Docker if not installed
