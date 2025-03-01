@@ -90,7 +90,7 @@ jobs:
               sudo apt install -y docker-compose
             fi
 
-            cd blockHouse_Project || { echo "Directory blockHouse_Project not found!"; exit 1; }
+            cd /home/ubuntu/blockHouse_Project || { echo "Directory blockHouse_Project not found!"; exit 1; }
             git pull origin main
 
             docker-compose down
