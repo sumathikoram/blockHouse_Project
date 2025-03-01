@@ -58,14 +58,14 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" | base64 --decode > ~/.ssh/github-actions-key
+          echo "$EC2_SSH_KEY" ~/.ssh/github-actions-key
           chmod 600 ~/.ssh/github-actions-key
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/github-actions-key
 
       - name: Debug SSH Connection
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key $EC2_USER@$EC2_HOST "echo SSH Connection Successful"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key $EC2_USER@$EC2_HOST "echo SSH Connect Successful"
 
       - name: Deploy to EC2
         run: |
