@@ -70,7 +70,7 @@ jobs:
 
       - name: SSH to EC2
         run: |
-          ssh -v -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/github-actions-key ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
 
             # Install Docker if not installed
             if ! command -v docker &> /dev/null
