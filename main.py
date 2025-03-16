@@ -21,6 +21,10 @@ class OrderCreate(BaseModel):
     quantity: int
     order_type: OrderType
 
+@app.get("/")
+def root():
+    return {"message": "Welcome to the FastAPI Orders Service! Use /orders/ to interact with orders."}
+
 # Create Order (POST)
 @app.post("/orders/")
 def create_order(order: OrderCreate, db: Session = Depends(get_db)):
